@@ -3,9 +3,10 @@ import numpy as np
 
 class YOLO_Kmeans:
 
-    def __init__(self, cluster_number, filename):
+    def __init__(self, cluster_number, filename, output_filepath):
         self.cluster_number = cluster_number
         self.filename = filename
+        self.out_filename = output_filepath
 
     def iou(self, boxes, clusters):  # 1 box -> k clusters
         n = boxes.shape[0]
@@ -58,7 +59,7 @@ class YOLO_Kmeans:
         return clusters
 
     def result2txt(self, data):
-        f = open("model_data/yolo_anchors.txt", 'w')
+        f = open(self.out_filename, 'w')
         row = np.shape(data)[0]
         for i in range(row):
             if i == 0:
