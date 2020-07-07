@@ -1,0 +1,5 @@
+classes = 1
+train = repo/darknet_conf/train.txt
+valid = repo/darknet_conf/test.txt
+names = repo/darknet_conf/obj.names
+backup = /content/backup
