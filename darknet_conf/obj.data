@@ -1,5 +1,5 @@
 classes = 1
-train = /content/repo/darknet_conf/train.txt
-valid = /content/repo/darknet_conf/test.txt
+train = /content/repo/model_date/train.txt
+valid = /content/repo/model_data/val.txt
 names = /content/repo/darknet_conf/obj.names
 backup = /content/shared_drive/Inteligentes/darknet_backup
