@@ -17,3 +17,12 @@
 /content/repo/dataset/20110817_106.jpg
 /content/repo/dataset/20110817_089.jpg
 /content/repo/dataset/IMG_2728.JPG
+/content/repo/dataset/IMG_3011.JPG
+/content/repo/dataset/IMG_2733.JPG
+/content/repo/dataset/IMG_3024.JPG
+/content/repo/dataset/IMG_20120226_164440.jpg
+/content/repo/dataset/IMG_2743.JPG
+/content/repo/dataset/IMG_2742.JPG
+/content/repo/dataset/IMG_2732.JPG
+/content/repo/dataset/IMG_2736.JPG
+/content/repo/dataset/20110817_013.jpg
