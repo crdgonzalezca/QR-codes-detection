@@ -54,17 +54,18 @@ def convert_x_y_to_top_left(img_file, x, y, w, h):
   return top, left
 
 def load_annotations(use_negatives = False):
-  annotation_files = !ls /content/repo/dataset/*.txt -w 1
+  annotation_files = _list_dir("/content/repo/dataset/", set(["txt"]))
   annotation_files = list(sorted(annotation_files))
 
-  image_files = !ls /content/repo/dataset/*.{jpg,JPG} -w 1
+  image_files = _list_dir("/content/repo/dataset/", set(["jpg", "JPG"]))
   image_files = list(sorted(image_files))
 
   if(use_negatives):
-    negative_annotation_files = !ls /content/repo/negative_dataset/*.txt -w 1
+    negative_annotation_files = _list_dir("/content/repo/negative_dataset/", set(["txt"]))
     annotation_files += list(sorted(negative_annotation_files))
 
-    negative_image_files = !ls /content/repo/negative_dataset/*.{jpeg,png,jpg} -w 1
+    negative_image_files = _list_dir("/content/repo/negative_dataset/", set(["jpeg", "png", "jpg"]))
+
     image_files += list(sorted(negative_image_files))
     
 
