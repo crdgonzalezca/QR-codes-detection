@@ -60,23 +60,26 @@ def load_annotations(use_negatives = False):
   image_files = _list_dir("/content/repo/dataset/", set(["jpg", "JPG"]))
   image_files = list(sorted(image_files))
 
+  total_negatives, total_images, total_boxes = 0, len(image_files), 0
   if(use_negatives):
     negative_annotation_files = _list_dir("/content/repo/negative_dataset/", set(["txt"]))
     annotation_files += list(sorted(negative_annotation_files))
 
-    negative_image_files = _list_dir("/content/repo/negative_dataset/", set(["jpeg", "png", "jpg"]))
-
-    image_files += list(sorted(negative_image_files))
+    negative_image_files = load_negatives()
+    total_negatives += len(negative_image_files)
+    image_files += negative_image_files
     
 
   result = {}
   for f, img_file in zip(annotation_files, image_files):
-      result[img_file] = []
-      with open(f, 'r') as f:
-          annotations = f.readlines()
-          for annotation in annotations:
-              _, x, y, w, h = map(float, annotation.strip().split(' '))
-              result[img_file].append((x,y,w,h))
+    result[img_file] = []
+    with open(f, 'r') as f:
+      annotations = f.readlines()
+      for annotation in annotations:
+          _, x, y, w, h = map(float, annotation.strip().split(' '))
+          total_boxes += 1
+          result[img_file].append((x,y,w,h))
+  print(f'Loaded {total_negatives} negative images, {total_images} images and {total_boxes} annotations.')
   return result
 
 def load_negatives():
@@ -91,9 +94,7 @@ def load_images_sizes(image_files):
     data.append([img_file, width, height])
   return pd.DataFrame(data, columns=['file', 'width', 'height'])
 
-def split_data(data, val_split, use_negatives=False):
-  if use_negatives:
-    data = data + load_negatives()
+def split_data(data, val_split):
   np.random.seed(10101)
   np.random.shuffle(data)
   np.random.seed(None)
@@ -107,8 +108,8 @@ def gen_dataset_file(outfile, data):
     for value in data:
       f.write(f'{value}\n')
 
-def split_dataset(data, val_split, use_negatives=False):
-  train, val = split_data(data, val_split, use_negatives)
+def split_dataset(data, val_split):
+  train, val = split_data(data, val_split)
   gen_dataset_file('/content/repo/model_data/train.txt', train)
   gen_dataset_file('/content/repo/model_data/val.txt', val)
   return train, val
