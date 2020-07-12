@@ -53,29 +53,23 @@ def convert_x_y_to_top_left(img_file, x, y, w, h):
   top = (y - (h // 2))
   return top, left
 
-def load_annotations(use_negatives = False):
-  annotation_files = !ls /content/repo/dataset/*.txt -w 1
+def load_annotations():
+  annotation_files = _list_dir('/content/repo/dataset/', {'txt'})
   annotation_files = list(sorted(annotation_files))
-
-  image_files = !ls /content/repo/dataset/*.{jpg,JPG} -w 1
+  image_files = _list_dir('/content/repo/dataset/', {'jpg', 'JPG'})
   image_files = list(sorted(image_files))
-
-  if(use_negatives):
-    negative_annotation_files = !ls /content/repo/negative_dataset/*.txt -w 1
-    annotation_files += list(sorted(negative_annotation_files))
-
-    negative_image_files = !ls /content/repo/negative_dataset/*.{jpeg,png,jpg} -w 1
-    image_files += list(sorted(negative_image_files))
-    
-
   result = {}
+  total_images, total_boxes = 0, 0 
   for f, img_file in zip(annotation_files, image_files):
       result[img_file] = []
+      total_images += 1
       with open(f, 'r') as f:
           annotations = f.readlines()
           for annotation in annotations:
               _, x, y, w, h = map(float, annotation.strip().split(' '))
               result[img_file].append((x,y,w,h))
+              total_boxes += 1
+  print(f'Loaded {total_images} images and {total_boxes} annotations.')
   return result
 
 def load_negatives():
