@@ -17,6 +17,7 @@ _NEGATIVE_DATASET_PATH = "/content/repo/negative_dataset/"
 _AUGMENTATION_DATASET_PATH = "/content/repo/augmentation_dataset/"
 _TRAIN_FILE_PATH = '/content/repo/model_data/train.txt'
 _VAL_FILE_PATH = '/content/repo/model_data/val.txt'
+_TEST_FILE_PATH = '/content/repo/model_data/test.txt'
 _METRICS_PATH = '/content/shared_drive/Inteligentes/metrics_graphs'
 
 def _list_dir(path, extensions=None):
@@ -31,13 +32,15 @@ def _list_dir(path, extensions=None):
 
 
 def generate_csv(df, filename, splits):
-  train, val = splits
+  train, val, test = splits
   new_names = []
   for name in df['image_name']:
     if name in train:
       split = 'train'
-    else:
+    elif name in val:
       split = 'val'
+    else:
+      split = 'test'
     new_names.append(f'./{split}/{name}')
   copy = df.copy()
   copy['image_name'] = new_names
@@ -115,25 +118,27 @@ def load_images_sizes(image_files):
     data.append([img_file, width, height])
   return pd.DataFrame(data, columns=['image', 'width', 'height'])
 
-def split_data(data, val_split):
+def split_data(data, val_split, test_split):
   np.random.seed(10101)
   np.random.shuffle(data)
   np.random.seed(None)
   data_size = len(data)
   num_val = int(data_size * val_split)
-  num_train = data_size - num_val
-  return data[:num_train], data[num_train:]
+  num_test = int(data_size * test_split)
+  num_train = data_size - num_val - num_test
+  return data[:num_train], data[num_train: num_train + num_val], data[num_train + num_val:]
 
 def gen_dataset_file(outfile, data):
   with open(outfile, 'w') as f:
     for value in data:
       f.write(f'{value}\n')
 
-def split_dataset(data, val_split):
-  train, val = split_data(data, val_split)
+def split_dataset(data, val_split, test_split):
+  train, val, test = split_data(data, val_split, test_split)
   gen_dataset_file(_TRAIN_FILE_PATH, train)
   gen_dataset_file(_VAL_FILE_PATH, val)
-  return train, val
+  gen_dataset_file(_TEST_FILE_PATH, test)
+  return train, val, test
 
 def imShow(path):
   image = cv2.imread(path)
@@ -272,7 +277,7 @@ def get_experiments_metrics(dataset_name):
   for experiment_path in experiments_path:
     name_experiment = "_".join(experiment_path.split("/")[-1].split(".")[0].split("_")[1:])
     if  name_experiment.split('_')[0] != dataset_name:
-      continuegi
+      continue
     with open(experiment_path, 'r') as f:
       text = f.read()
     precision, recall, avg_precision = get_metrics_from_results(text)
