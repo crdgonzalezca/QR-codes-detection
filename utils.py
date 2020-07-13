@@ -60,7 +60,7 @@ def load_annotations(use_negatives = False):
   annotation_files = _list_dir("/content/repo/dataset/", set(["txt"]))
   annotation_files = list(sorted(annotation_files))
 
-  image_files = _list_dir("/content/repo/dataset/", set(["jpg", "JPG"]))
+  image_files = _list_dir("/content/repo/dataset/", {"jpg", "JPG", 'jpeg', 'PNG', 'png'})
   image_files = list(sorted(image_files))
 
   total_negatives, total_images, total_boxes = 0, len(image_files), 0
