@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 import numpy as np
 import cv2
@@ -10,12 +11,14 @@ from sklearn.metrics import silhouette_score
 _CLASSES_PATH = "/content/repo/model_data/classes.txt"
 
 
-def _list_dir(path, extensions):
+def _list_dir(path, extensions=None):
   '''
   params:
   command: str with the path to list
   '''
   files = os.listdir(path)
+  if not extensions:
+    return [os.path.join(path, file_path) for file_path in files]
   return [os.path.join(path, file_path) for file_path in files if file_path.split('.')[-1] in extensions]
 
 
@@ -157,3 +160,84 @@ def plot_cluster_predictions(clustering, X, y, n_clusters = None, cmap = plt.cm.
 def scale_anchors(anchors, width, height):
   result = anchors * [width, height]
   return result.astype(int)
+
+
+def get_loss_from_logs(text):
+  lines = text.split('\n')
+  loss_regex = r'([0-9]+?): [-+]?[0-9]*\.?[0-9]+, ([-+]?[0-9]*\.?[0-9]+?) avg loss.*'
+  losses = []
+  expected_epoch = 1
+  for line in lines:
+    line = line.strip()
+    if re.match(loss_regex, line):
+      search = re.search(loss_regex, line)
+      epoch = int(search.group(1))
+      loss = float(search.group(2))
+      if expected_epoch != epoch: # Identify left epochs in logs
+        print(f'expected {expected_epoch} but got {epoch}')
+        for e in range(expected_epoch ,epoch):
+          losses.append(losses[-1])
+        expected_epoch = epoch
+      losses.append(loss)
+      expected_epoch += 1
+  return losses
+
+def get_map_from_logs(text):
+  lines = text.split('\n')
+  map_regex = 'mean_average_precision \(mAP@0\.5\) = ([0-9]*\.?[0-9]+ ?)'
+  loss_regex = r'([0-9]+?): [-+]?[0-9]*\.?[0-9]+, ([-+]?[0-9]*\.?[0-9]+?) avg loss.*'
+  epoch = 0
+  maps = []
+  epochs = []
+  for line in lines:
+    line = line.strip()
+    if re.match(loss_regex, line):
+      epoch = int(re.search(loss_regex, line).group(1))
+    if re.match(map_regex, line):
+      map = float(re.search(map_regex, line).group(1)) * 100
+      maps.append(map)
+      epochs.append(epoch)
+  return maps, epochs
+
+def parse_logs(ignore_logs_from=[]):
+  logs_folder = '/content/shared_drive/Inteligentes/darknet_logs'
+  experiments = _list_dir(logs_folder)
+  losses = {}
+  maps = {}
+  maps_epochs = {}
+  for experiment in experiments:
+    if experiment in ignore_logs_from:
+      continue
+    logs_name = 'loss_tiny.txt'
+    logs_path = os.path.join(logs_folder, experiment, logs_name)
+    text = ''
+    with open(logs_path, 'r') as f:
+      text = f.read()
+    print(experiment)
+    exp_losses = get_loss_from_logs(text)
+    exp_maps, exp_maps_epochs = get_map_from_logs(text)
+    maps[experiment] = exp_maps
+    maps_epochs[experiment] = exp_maps_epochs
+    losses[experiment] = exp_losses
+  return losses, [maps, maps_epochs]
+
+def get_precision_recall_from_results(text):
+  lines = text.split('\n')
+  recall_precision_regex = r'\[(.)*\]'
+  recall_precision = []
+  precision = []
+  recall = []
+  
+  for line in lines:
+    line = line.strip()
+    for match in re.finditer(recall_precision_regex, line):
+      s = match.start()
+      e = match.end()
+      recall_precision.append(line[s:e])
+
+  for i, x in enumerate(recall_precision):
+    for z in x[1:len(x) - 1].split(","):
+      val = float(z.split("'")[1])
+      if (i == 0):  precision.append(val)
+      else: recall.append(val)
+  return precision, recall
