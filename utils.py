@@ -87,8 +87,8 @@ def load_annotations(use_negatives=False, use_augmentation=False):
     aug_annotation_files = _list_dir(_AUGMENTATION_DATASET_PATH, {"txt"})
     annotation_files += list(sorted(aug_annotation_files))
 
-    aug_image_files = _list_dir(_AUGMENTATION_DATASET_PATH, {'jpeg', 'PNG', 'png'})
-    total_augmentation += len(aug_image_files)
+    aug_image_files = _list_dir(_AUGMENTATION_DATASET_PATH, {'jpeg', 'PNG', 'png', 'jpg'})
+    total_augmentation = len(aug_image_files)
     image_files += aug_image_files
   
   result = {}
