@@ -1,4 +1,4 @@
-# QR-codes-detection
+# QR codes detection
 QR codes detection in images
 
 Project for the class [Introducción a los Sistemas Inteligentes](https://fagonzalezo.github.io/iis-2020-1/) at Universidad Nacional de Colombia. Project done by [@crdgonzalezca](https://github.com/crdgonzalezca) and [@NicolasRestrepoTorres](https://github.com/NicolasRestrepoTorres).
@@ -9,4 +9,4 @@ For the QR detection we have used the *tiny version of YOLOv3*, the [Darknet](ht
 
 Here is an example of results obtained:
 
-![](/home/cristian/Desktop/UNAL/2020-I/Inteligentes/Project/QR-codes-detection/assets/predictions.jpg)
+![](assets/predictions.jpg)
