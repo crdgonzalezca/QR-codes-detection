@@ -9,4 +9,4 @@ For the QR detection we have used the *tiny version of YOLOv3*, the [Darknet](ht
 
 Here is an example of results obtained:
 
-![](assets/predictions.jpg)
+![prediction](assets/predictions.jpg)
