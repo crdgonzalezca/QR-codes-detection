@@ -18,7 +18,6 @@ _AUGMENTATION_DATASET_PATH = "/content/repo/augmentation_dataset/"
 _TRAIN_FILE_PATH = '/content/repo/model_data/train.txt'
 _VAL_FILE_PATH = '/content/repo/model_data/val.txt'
 _TEST_FILE_PATH = '/content/repo/model_data/test.txt'
-_METRICS_PATH = '/content/shared_drive/Inteligentes/metrics_graphs'
 
 def _list_dir(path, extensions=None):
   '''
@@ -265,9 +264,8 @@ def get_metrics_from_results(text):
       else: recall.append(val)
   return precision, recall, avg_precision
 
-#todo
-def get_experiments_metrics(dataset_name):
-  experiments_path = _list_dir(_METRICS_PATH, {'txt'})
+def get_experiments_metrics(dataset_name, metrics_path):
+  experiments_path = _list_dir(metrics_path, {'txt'})
   recall_x_precision = {}
   maps = {}
   precisions = {}
