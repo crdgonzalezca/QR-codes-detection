@@ -1,0 +1,26 @@
+<annotation>
+	<folder>augmentation_dataset</folder>
+	<filename>IMG_2720_aug_1.jpg</filename>
+	<path>/media/nicolas/Documentos/Nacional/XII (Final)/Introducción a los Sistemas Inteligentes/QR-codes-detection/augmentation_dataset/IMG_2720_aug_1.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4752</width>
+		<height>3168</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>QR</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2547</xmin>
+			<ymin>2045</ymin>
+			<xmax>3062</xmax>
+			<ymax>2559</ymax>
+		</bndbox>
+	</object>
+</annotation>
